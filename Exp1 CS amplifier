@@ -1,0 +1,208 @@
+-Experiment – 1  
+Common Source (CS) Amplifier – Simulation and Analysis
+ =Aim
+To simulate and analyze a Common Source (CS) MOSFET amplifier using LTSpice by performing DC, Transient, and AC analyses and to evaluate parameters such as operating point, voltage gain, and frequency response.
+
+-Components Required:-
+- NMOS transistor (nmos4 – TSMC 180 nm technology)
+- DC Supply Voltage – 1.5 V
+- Load Capacitance (CL) – 1 pF
+- Power constraint – 0.5 mW
+- Connecting wires
+
+-Theory
+The MOSFET (Metal Oxide Semiconductor Field Effect Transistor) is widely used in analog and digital circuits because of:
+
+- Compact size  
+- Low power consumption  
+- Simple structure  
+- Compatibility with VLSI fabrication  
+
+-MOSFET Amplifier Configurations
+
+1. Common Source (CS)
+2. Common Drain (Source Follower)
+3. Common Gate
+
+-Common Source Amplifier
+
+In the Common Source configuration:
+- Input is applied at the gate terminal.
+- Output is taken from the drain terminal.
+- The source terminal is common (usually grounded).
+
+- Saturation Condition (for amplification)
+
+The MOSFET must operate in saturation region:
+- VGS > VTH  
+- VDS ≥ VOV  
+- VGD < VTH  
+
+Key Characteristics
+- High voltage gain  
+- 180° phase shift between input and output  
+- High input impedance  
+- Voltage Gain (small signal):
+
+- DC Analysis
+ Objective
+To determine the DC operating point (Q-point) of the MOSFET.
+
+Importance
+- Ensures transistor operates in saturation  
+- Prevents signal distortion  
+- Maintains linear amplification  
+- Verifies biasing conditions  
+
+DC Design Calculations
+ Step 1: Drain Current from Power Constraint
+
+Total power:
+P = VDD × ID
+ID = P / VDD
+ID = (0.5 mW) / (1.5 V)
+ID = 0.333 mA
+ID ≈ 333 µA
+
+Step 2: Overdrive Voltage (VOV)
+VOV = VGS − VTH
+VOV = 0.9 − 0.4  
+VOV = 0.5 V
+
+Step 3: Verify Drain Current using MOSFET Equation
+For saturation:
+ID = (1/2) Kn' (W/L) (VOV)²
+W/L = (3 µm) / (0.18 µm)  
+W/L = 16.67
+ID = (1/2) × 200 µA/V² × 16.67 × (0.5)²
+ID = 100 × 16.67 × 0.25  
+ID = 416.75 µA
+
+The calculated value is close to required 333 µA  
+Hence biasing is approximately correct.
+
+Step 4: Drain Resistor (RD)
+For maximum symmetrical swing:
+VD ≈ VDD / 2  
+VD ≈ 1.5 / 2  
+VD ≈ 0.75 V
+Voltage across RD:
+VRD = VDD − VD  
+VRD = 1.5 − 0.75  
+VRD = 0.75 V
+
+RD = VRD / ID
+RD = 0.75 / 0.333 mA
+RD ≈ 2.25 kΩ
+
+Parameters Obtained
+- Drain Current (ID)
+- Gate-Source Voltage (VGS)
+- Drain-Source Voltage (VDS)
+
+A proper Q-point allows maximum symmetrical output swing.
+
+-Transient Analysis
+
+ Objective
+To analyze circuit response to a time-varying input signal.
+
+Input Specifications
+- DC Bias (VGS) = 0.9 V  
+- Signal Amplitude = 50 mV  
+- Frequency = 1 kHz
+
+Step 1: Transconductance (gm)
+gm = 2ID / VOV
+gm = (2 × 0.333 mA) / 0.5
+gm = 0.666 mA / 0.5  
+gm = 1.332 mS
+
+Step 2: Output Resistance (ro)
+ro = 1 / (λID)
+Assume λ ≈ 0.1 V⁻¹ (typical for 180nm)
+ro = 1 / (0.1 × 0.333 mA)
+ro = 1 / (0.0000333)
+ro ≈ 30 kΩ
+
+Since ro >> RD, gain mainly depends on RD.
+
+ Observations
+- Output waveform is amplified  
+- 180° phase inversion observed  
+- Any distortion or DC shift can be detected  
+This analysis helps evaluate time-domain behavior and speed performance.
+
+- AC Analysis
+
+ Objective
+To study small-signal gain and frequency response.
+
+Frequency Sweep
+- Start Frequency = 0.1 Hz  
+- Stop Frequency = 100 GHz  
+- Points per decade = 20
+
+ Voltage Gain Calculation
+Voltage Gain:
+Av = −gm RD
+Av = − (1.332 mS × 2.25 kΩ)
+Av = − (1.332 × 2.25)
+Av ≈ −3
+So expected midband gain ≈ −3 V/V
+
+Parameters Studied
+- Midband gain  
+- Bandwidth  
+- Cutoff frequencies  
+- Gain roll-off  
+
+In midband region:
+Bandwidth Calculation
+Upper cutoff frequency:
+fH = 1 / (2π Rtotal CL)
+
+Assuming Rtotal ≈ RD
+fH = 1 / (2π × 2.25k × 1pF)
+fH = 1 / (2π × 2.25 × 10³ × 10⁻¹²)
+fH ≈ 70.7 MHz
+So bandwidth ≈ 70 MHz
+
+Gain decreases at high frequencies due to parasitic capacitances.
+
+-Procedure
+
+1. Create a new project folder and save the LTSpice schematic file.
+2. Set NMOS parameters:
+   - Length = 180 nm
+   - Width = 3 µm
+   - Model name = CMOSN
+3. Apply VDD = 1.5 V.
+4. Set gate bias voltage to 0.9 V.
+5. Run `.op` for DC analysis.
+6. Apply sinusoidal input and run `.tran 3m`.
+7. Perform AC sweep using `.ac dec 20 0.1 100G`.
+8. Record operating point values, gain, and waveform observations.
+
+-Results and Discussion:-
+
+- MOSFET operates in saturation under proper biasing.
+- Output signal is amplified and inverted.
+- Gain depends on transconductance (gm) and drain resistance (RD).
+- Increasing transistor width increases drain current and gm.
+- Maximum gain occurs in the mid-frequency range.
+- Gain reduces at very low and very high frequencies.
+
+-Inference
+1. Drain current increases with increase in MOSFET width.
+2. Saturation region ensures stable and linear amplification.
+3. CS amplifier produces negative voltage gain due to phase inversion.
+4. Midband region provides maximum small-signal gain.
+5. Transient analysis confirms time-domain response and amplification.
+6. AC analysis helps determine bandwidth and frequency limitations.
+
+-Conclusion
+The Common Source amplifier was successfully simulated using LTSpice.  
+DC, Transient, and AC analyses confirm proper saturation operation, voltage amplification with phase inversion, and expected frequency response characteristics.
+
+
